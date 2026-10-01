@@ -1,30 +1,29 @@
-const { Configuration, OpenAIApi } = require("openai");
+const OpenAI = require("openai");
 
-const configuration = new Configuration({
+const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
-const openai = new OpenAIApi(configuration);
 
 /**
  * Create a single text embedding vector.
  */
 async function createEmbedding(text) {
-  const response = await openai.createEmbedding({
+  const response = await openai.embeddings.create({
     model: "text-embedding-ada-002",
     input: text,
   });
-  return response.data.data[0].embedding;
+  return response.data[0].embedding;
 }
 
 /**
  * Create embeddings for a batch of texts.
  */
 async function createBatchEmbeddings(texts) {
-  const response = await openai.createEmbedding({
+  const response = await openai.embeddings.create({
     model: "text-embedding-ada-002",
     input: texts,
   });
-  return response.data.data.map((item) => item.embedding);
+  return response.data.map((item) => item.embedding);
 }
 
 /**

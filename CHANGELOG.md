@@ -1,52 +1,20 @@
 # Changelog
 
-## [Unreleased] — Migration to openai@4
+## Intentionally pinned to openai v6.49.0
 
-This application is pinned to `openai@3.3.0`. The following changes are required to
-migrate to the current v4 SDK. This information is here as a **medium-difficulty**
-structured guide — the same information also exists in verbose prose form in the
-openai v4.0.0 GitHub release notes.
+> **⚠️ For depfix end-to-end testing.**
+> This repo uses `openai@6.49.0` — one major version behind `openai@7.x`.
+> depfix should detect the single-major drift (6 → 7) and propose a PR.
 
-### Breaking changes in openai@4.0.0
+### Known v6 → v7 migration notes
 
-**1. Client instantiation**
+| Old (v6) | New (v7) | Notes |
+|---|---|---|
+| `openai.beta.chat.completions.stream()` | `openai.chat.completions.stream()` (moved out of beta) | Stream helper promoted from beta namespace |
+| `stream.finalChatCompletion()` | `stream.finalMessage()` | Renamed for clarity |
+| `ChatCompletionStreamingRunner` | Removed — use `Stream<ChatCompletionChunk>` directly | Breaking: runner type removed |
 
-| Before (v3) | After (v4) |
-|---|---|
-| `const { Configuration, OpenAIApi } = require("openai")` | `const OpenAI = require("openai")` |
-| `const configuration = new Configuration({ apiKey })` | — |
-| `const openai = new OpenAIApi(configuration)` | `const client = new OpenAI({ apiKey })` |
-
-**2. Chat completions**
-
-| Before (v3) | After (v4) |
-|---|---|
-| `openai.createChatCompletion({ model, messages })` | `client.chat.completions.create({ model, messages })` |
-| `response.data.choices[0].message.content` | `response.choices[0].message.content` |
-
-**3. Embeddings**
-
-| Before (v3) | After (v4) |
-|---|---|
-| `openai.createEmbedding({ model, input })` | `client.embeddings.create({ model, input })` |
-| `response.data.data[0].embedding` | `response.data[0].embedding` |
-
-**4. Moderations**
-
-| Before (v3) | After (v4) |
-|---|---|
-| `openai.createModeration({ input })` | `client.moderations.create({ input })` |
-| `response.data.results[0]` | `response.results[0]` |
-
-**5. Streaming**
-
-The streaming API was completely redesigned in v4. Instead of a raw event-stream
-response, v4 returns an async iterable via `stream: true` and
-`client.chat.completions.create()`.
-
-## [1.0.0] — 2024-01-15
-
-- Initial release
-- Chat endpoint using GPT-3.5-turbo and GPT-4
-- Batch and single text embeddings
-- Content moderation pre-flight check
+### Migration difficulty: medium
+OpenAI publishes structured release notes and TypeScript exports diffs.
+The v6→v7 diff is small: mostly the beta stream API promotion.
+depfix can ground this from the npm TS exports diff and GitHub releases.

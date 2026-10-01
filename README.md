@@ -1,30 +1,28 @@
 # openai-chat-app
 
-A simple Express API that wraps the OpenAI chat, embeddings, and moderation APIs.
+An Express API using the OpenAI SDK for chat, embeddings, and moderation.
 
-> **⚠️ Intentionally outdated for depfix testing.**
-> This repo uses `openai@3.3.0` and the legacy `Configuration` + `OpenAIApi` classes.
-> It is a test fixture for [depfix](https://github.com/bedilk/depfix), which should
-> detect the version drift to `openai@4.x` and generate PRs to migrate the call sites.
+> **⚠️ Intentionally one major version behind for depfix testing.**
+> This repo uses `openai@6.49.0` — one major version behind `openai@7.x`.
+> It is a test fixture for [depfix](https://github.com/bedilk/depfix).
 
 ## What depfix should detect
 
 | Scenario | Expected outcome |
 |---|---|
-| Version drift | `openai 3.3.0` → current `4.x` |
-| `openai.createChatCompletion()` in `src/chat.js` | ACTIONABLE — migrate to `client.chat.completions.create()` |
-| `openai.createEmbedding()` in `src/embeddings.js` | ACTIONABLE — migrate to `client.embeddings.create()` |
-| `openai.createModeration()` in `src/moderations.js` | ACTIONABLE — migrate to `client.moderations.create()` |
+| Version drift | `openai 6.49.0` → `7.x` (one major step) |
+| `openai.beta.chat.completions.stream()` | ACTIONABLE — promoted out of beta in v7 |
+| `stream.finalChatCompletion()` | ACTIONABLE — renamed to `stream.finalMessage()` in v7 |
 
-## Endpoints
+## Feed difficulty
 
-- `POST /chat` — `{ "message": "..." }` → `{ "reply": "..." }`
-- `POST /embed` — `{ "text": "..." }` → `{ "embedding": [...], "dimensions": 1536 }`
+**Medium**: OpenAI publishes TypeScript exports diffs and structured release notes.
+The v6→v7 step is a single major with a small, groundable surface diff.
 
 ## Setup
 
 ```bash
-cp .env.example .env  # add your OPENAI_API_KEY
+cp .env.example .env
 npm install
 npm start
 ```

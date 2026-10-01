@@ -1,19 +1,17 @@
-const { Configuration, OpenAIApi } = require("openai");
+const OpenAI = require("openai");
 
-const configuration = new Configuration({
+const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
-const openai = new OpenAIApi(configuration);
 
 /**
  * Check whether text violates OpenAI's usage policies.
- * Returns the moderation result object.
  */
 async function moderateContent(text) {
-  const response = await openai.createModeration({
+  const response = await openai.moderations.create({
     input: text,
   });
-  return response.data.results[0];
+  return response.results[0];
 }
 
 /**
